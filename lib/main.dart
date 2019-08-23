@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:traininxd/widget/trainings_list.dart';
 
 import 'model/day.dart';
 
@@ -31,6 +32,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   Day day;
+  bool trainingStarted= false;
 
   @override
   void initState()  {
@@ -58,12 +60,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget getBody()  {
 
-    if(day != null) return Text("Your Day is ${stringFromEnumString(day.momentary.toString())}");
+    if(day != null && !trainingStarted) {
+      return startTrainingBox();
+    }
+    if(day != null && trainingStarted) {
+      return TrainingsList(day);
+    }
+    return selectDayBox();
+  }
+
+  Column selectDayBox() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        Text("select your current trainingxDay"),
+        Text("select your current trainingxDay",style: TextStyle(fontSize: 30),),
         Padding(
           padding: const EdgeInsets.only(top: 100),
           child: daySelectButton(DayType.push),
@@ -71,6 +82,23 @@ class _MyHomePageState extends State<MyHomePage> {
         daySelectButton(DayType.pull),
         daySelectButton(DayType.leg),
       ],
+    );
+  }
+
+  GestureDetector startTrainingBox() {
+    return GestureDetector(
+      onTap: () => setState(()=> this.trainingStarted = true),
+      child: Container(
+        height: 100,
+        width: 200,
+        decoration: BoxDecoration(
+          border: Border.all(),
+          borderRadius: BorderRadius.circular(15)
+        ),
+        child: Text("Start ${(day.toString())} traininxD",
+          style: TextStyle(fontSize: 30),
+        ),
+      ),
     );
   }
 
@@ -98,6 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
 }
 
 String stringFromEnumString(String enumString){

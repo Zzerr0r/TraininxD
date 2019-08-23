@@ -1,4 +1,7 @@
+import 'package:traininxd/main.dart';
 import 'package:traininxd/model/savable.dart';
+
+import 'init.dart';
 
 class Day extends Savable {
 
@@ -7,7 +10,7 @@ class Day extends Savable {
   static const String _saveString = "Day";
 
 
-  Set<Training> get trainings => DayTrainingMap[momentary];
+  Set<TrainingType> get trainings => DayTrainingMap[momentary];
 
 
   Day(this.momentary){
@@ -30,27 +33,28 @@ class Day extends Savable {
     return Day(dayTypeFromString(read));
   }
 
+  @override
+  String toString() {
+    return stringFromEnumString(this.momentary.toString());
+  }
+
 }
 
 enum DayType{
   push,pull,leg
 }
 
-enum Training{
-  Bankdruecken,Schulterdruecken,Pulldowns,Seitheben,
-  RomanianDL,PullDowns,CableRows,FacePulls,
-  Squat,LegPress,LegCurls,CalfRaises
-}
 
-const Map<DayType,Set<Training>> DayTrainingMap = {
+
+const Map<DayType,Set<TrainingType>> DayTrainingMap = {
   DayType.push : {
-    Training.Bankdruecken,Training.Schulterdruecken,Training.Pulldowns,Training.Seitheben,
+    TrainingType.Bankdruecken,TrainingType.Schulterdruecken,TrainingType.Pushdowns,TrainingType.Seitheben,
   },
   DayType.pull : {
-    Training.RomanianDL,Training.PullDowns,Training.CableRows,Training.FacePulls,
+    TrainingType.RomanianDL,TrainingType.PullDowns,TrainingType.CableRows,TrainingType.FacePulls,
   },
   DayType.leg : {
-    Training.Squat,Training.LegPress,Training.LegCurls,Training.CalfRaises,
+    TrainingType.Squat,TrainingType.LegPress,TrainingType.LegCurls,TrainingType.CalfRaises,
   }
 };
 
@@ -58,8 +62,8 @@ const Map<DayType,Set<Training>> DayTrainingMap = {
   DayType.push,DayType.pull,DayType.leg
 ];
 
- Training trainingFromString(String string){
-  return Training.values.firstWhere((test) => string == test.toString());
+ TrainingType trainingFromString(String string){
+  return TrainingType.values.firstWhere((test) => string == test.toString());
 }
  DayType dayTypeFromString(String string){
   return DayType.values.firstWhere((test) => string == test.toString());
