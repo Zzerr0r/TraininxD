@@ -11,6 +11,8 @@ class Training extends Savable{
   final int repetitions;
   final int sets;
 
+  String get name => stringFromEnumString(training.toString()).replaceAll("ue", "ü");
+
   @override
   void save(){
     this.saveValue = weight.toString();

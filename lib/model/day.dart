@@ -1,6 +1,7 @@
 import 'package:traininxd/main.dart';
 import 'package:traininxd/model/savable.dart';
 
+import 'exercise.dart';
 import 'init.dart';
 
 class Day extends Savable {
@@ -10,7 +11,7 @@ class Day extends Savable {
   static const String _saveString = "Day";
 
 
-  Set<TrainingType> get trainings => DayTrainingMap[momentary];
+  List<Training> get trainings => DayTrainingMap[momentary].map((type) => Init.map[type]).toList();
 
 
   Day(this.momentary){

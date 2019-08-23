@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:traininxd/model/day.dart';
 import 'package:traininxd/model/exercise.dart';
 import 'package:traininxd/model/init.dart';
+import 'package:traininxd/widget/trainings_card.dart';
+
+import '../main.dart';
 
 class TrainingsList extends StatefulWidget {
 
   final Day day;
+  final MyHomePageState parentState;
 
-  const TrainingsList(this.day);
+  const TrainingsList(this.day, this.parentState);
 
 
 
@@ -19,23 +23,39 @@ class TrainingsList extends StatefulWidget {
 
 class TrainingsListState extends State<TrainingsList> {
 
+  bool trainingDone = false;
+  Map<Training,int> weightMap = {};
+
+
   @override
   Widget build(BuildContext context) {
-    Set<TrainingType> traininxList = widget.day.trainings;
-    List<Training> trainings = traininxList.map((type) => Init.fromTrainginType(type)).toList();
+    List<Training> trainings = widget.day.trainings;
+    trainings.forEach((t)=> weightMap.putIfAbsent(t, ()=> t.weight));
     return ListView.builder(
-        itemCount: traininxList.length,
+        itemCount: trainings.length+1,
         itemBuilder: (
         BuildContext context, int i) =>
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Card(
-            child: Container(
-              height: 100,
-              width: 200,
-                child: Center(child: Text(trainings[i].toString()))),
-          ),
-        )
-    );
+            i < trainings.length ? TrainingsCard(trainings[i], this)
+                : IconButton(
+              icon: Icon(Icons.check,
+                color: !trainingDone ?Colors.grey : Colors.green,
+                size: 40,
+              ),
+              onPressed: () => done()),
+            );
   }
+
+  void done(){
+    setState(() {
+      this.trainingDone = true;
+    });
+    this.weightMap.forEach((k,v) {
+      k.weight = v;
+      k.save();
+    });
+    Future.delayed(Duration(
+      milliseconds: 500
+    ),() => widget.parentState.trainingDone());
+  }
+
 }

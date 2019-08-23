@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:traininxd/widget/trainings_list.dart';
 
 import 'model/day.dart';
+import 'model/init.dart';
 
 void main() => runApp(MyApp());
 
@@ -26,10 +27,10 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  MyHomePageState createState() => MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePageState extends State<MyHomePage> {
 
   Day day;
   bool trainingStarted= false;
@@ -64,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return startTrainingBox();
     }
     if(day != null && trainingStarted) {
-      return TrainingsList(day);
+      return TrainingsList(day, this);
     }
     return selectDayBox();
   }
@@ -87,7 +88,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   GestureDetector startTrainingBox() {
     return GestureDetector(
-      onTap: () => setState(()=> this.trainingStarted = true),
+      onTap: () {
+        setState(() => this.trainingStarted = true);
+        Init.init();
+      },
       child: Container(
         height: 100,
         width: 200,
@@ -95,8 +99,13 @@ class _MyHomePageState extends State<MyHomePage> {
           border: Border.all(),
           borderRadius: BorderRadius.circular(15)
         ),
-        child: Text("Start ${(day.toString())} traininxD",
-          style: TextStyle(fontSize: 30),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25),
+            child: Text("Start ${(day.toString())} traininxD",
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+          ),
         ),
       ),
     );
@@ -125,6 +134,13 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+
+  void trainingDone(){
+    this.day.next();
+    setState(() {
+      this.trainingStarted = false;
+    });
   }
 
 }
